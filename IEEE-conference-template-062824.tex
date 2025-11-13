@@ -1,0 +1,239 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+%Template version as of 6/27/2024
+\usepackage{siunitx}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{Comparison of Control Strategies for Four Switch Buck Boost Converter\\
+}
+
+\author{\IEEEauthorblockN{Fatih Yildirim}
+\IEEEauthorblockA{\textit{Department of Electrical and Electronics Engineering} \\
+\textit{Koç University}\\
+Istanbul, Turkey \\
+fyildirim24@ku.edu.tr}
+}
+
+\maketitle
+
+\begin{abstract}
+In modern electronic systems, DC-to-DC converters are crucial in providing efficient, stable power conversion across a broad operating envelope of both input and output conditions.
+In many applications, such as aerospace, automotive, and renewable energy systems, converters that can function satisfactorily even with very wide variations in either supply or load conditions are required.
+These somewhat conflicting requirements cannot be met simultaneously by traditional converter topologies, which has driven the usage of a variety of converter types or complex hybrid architectures.
+Another flexible and compact alternative is the FSBB converter, whose operation in both buck and boost modes is confined to a single stage.
+This paper compares two control methodologies applied to the FSBB converter: single-mode control and multimode control.
+It investigates their steady-state and transient behaviors under several line and load conditions.
+This controller employs current-mode control using a PI compensator to regulate the output voltage. The parameters of the controller are tuned using frequency-domain stability analysis.
+The simulation results confirm that both control strategies have acceptable regulation performance, with voltage deviation within ±2\% under dynamic conditions.
+However, multimode control provides higher efficiency owing to lower switching losses during distinct buck or boost states of operation.
+These results pinpoint certain simplicity-efficiency trade-offs in FSBB converter control design and give insights into the development of high-efficiency power management systems requiring wide-range operation.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Digital Control, Current Mode Control, Four Switch Buck Boost Converter, Power Electronics
+\end{IEEEkeywords}
+
+\section{Introduction}
+Four-Switch Buck-Boost Converter (FSBB) is used widely in power supplies because it can work wide input range and also output voltage can be set to wide range. 
+We can see the FSBB in Figure 1. There are four switches. Two of them are used as buck switches. The others are used as boost switches. Actually, it is the cascaded buck and boost converters. 
+
+\begin{figure}[htbp]
+    \centerline{\includegraphics{fig1-four-switch-buck-boost-converter.png}}
+    \caption{Four Switch Buck Boost Converter}
+    \label{fig1-four-switch-buck-boost-converter}
+\end{figure}
+
+For designer, it provides ease to use since the designer gets rid of the design burden. The output voltage can be adjusted within the specified range. 
+When the current mode control is used to control converter, it can be used as battery charger and discharger \cite{ref_1, ref_2, ref_3, ref_4} because it is also a bidirectional converter.
+There are various advantages to use FSBB. However, there is disadvantages of FSBB. The control of FSBB is complicated since FSBB has two topologies which are buck and boost. 
+That means it has two duty cycles to be controlled. Transitions among the regions are not very smooth. With the proper control strategy, it can meet the standard specifications.
+There are various control methodologies. Two of them are single mode \cite{ref_2} and multimode control \cite{ref_5, ref_6, ref_7, ref_8}. In part 2, the control strategies will be explained.
+We will compare these strategies in part 3 on simulation results. 
+
+\section{Operation Principle of the FSBB}
+\subsection{Single Mode Control Strategy}
+In single mode strategy, there is one duty cycle value. In Figure \ref{fig2}, we can see the duty cycle of the switches.
+In this mode, four switches are working and efficiency is low since there are always switching losses of four switches.
+
+\begin{figure}[htbp]
+    \centerline{\includegraphics{fig2.png}}
+    \caption{Single Mode Control}
+    \label{fig2}
+\end{figure}
+
+\subsection{Multimode Control Strategy}
+In multimode control, there are four operation states. 
+\begin{itemize}
+    \item Buck State
+    \item Boost State
+    \item Constant Buck State
+    \item Constant Boost State
+\end{itemize}
+
+\subsubsection{Buck State}
+Buck state happens when the input voltage of converter is greater than the output voltage. In this state, duty of buck switches is controlled. 
+Boost switch on the line(Q4) is always on and the other(Q3) is always off position as seen in Figure \ref{fig3}. 
+At buck switches, there are switching loss and conduction loss. 
+At boost switch on the line, there is only conduction loss. Because of that, efficiency is high compare to single mode control.  
+
+\begin{figure}[htbp]
+    \centerline{\includegraphics{fig3.png}}
+    \caption{Buck State}
+    \label{fig3}
+\end{figure}
+
+\subsubsection{Boost State}
+When the input voltage is lower than the output voltage, boost state happens. As seen in the Figure \ref{fig4}, duty of boost switches is controlled and Q1 is always on. 
+Like in buck state, efficiency is high.
+
+\begin{figure}[htbp]
+    \centerline{\includegraphics{fig4.png}}
+    \caption{Boost State}
+    \label{fig4}
+\end{figure}
+
+\subsubsection{Constant Buck State}
+When the input voltage is slightly greater than or equal to the output voltage, the circuit operates at constant buck state. 
+In this state, duty of buck switches is constant. The output voltage regulation is done with boost switches.
+When all switches are working, efficiency is low compare to buck or boost state. 
+
+\subsubsection{Constant Boost State}
+When the input voltage is slightly lower than or equal to the output voltage, the circuit operates at constant boost state. 
+In this state, duty of boost switches is constant. The output voltage regulation is done with buck switches. 
+When all switches are working, efficiency is low compare to buck or boost state.
+
+In the Figure \ref{fig5}, duty cycle characteristic of multimode control strategy with respect to calculated duty by controller is seen. Calculated duty is between 0 and 2.
+
+\begin{figure}[htbp]
+    \centerline{\includegraphics{fig5.png}}
+    \caption{Duty Cycle characteristic of multimode control strategy}
+    \label{fig5}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centerline{\includegraphics{fig6.png}}
+    \caption{Flow Chart}
+    \label{fig6}
+\end{figure}
+
+Flow chart for the controller operation of power converter is seen in the Figure \ref{fig6}. Operation state is decided with calculated duty cycle by PI controller.
+
+\subsection{Control Loop Description}
+Following the Vref, current mode control is used with traditional PI controller as seen in the Figure \ref{fig7}. 
+
+\begin{figure}[htbp]
+    \centerline{\includegraphics{fig7.png}}
+    \caption{FSBB Control Strategy}
+    \label{fig7}
+\end{figure}
+
+In order to determine PI variable, bode plot stability analysis technique is used. Buck and Boost stage are evaluated separately. 
+Same compensators are selected to make both stage stable.
+
+\section*{Simulation Results}
+
+We can see the specification of power converter in Table \ref{tab1}. Input voltage parameter is determined with respect to MIL-STD-704E. 
+According to MIL-STD-704E, converter is able to work continuously between 16V and 40V. Also, it is able to stand 50V around 50ms. 
+Converter’s output voltage can be set any value between 16V and 40V. The output power is always 300W independent from input and output voltage. 
+
+\begin{table}[htbp]
+    \centering
+    \caption{Parameter of Converter}
+    \label{tab1}
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Input Voltage (V)} & 16--40 \\ \hline
+        \textbf{Output Voltage (V)} & 16--40 \\ \hline
+        \textbf{Power (W)} & 250 \\ \hline
+        \textbf{Switching Frequency (kHz)} & 300 \\ \hline
+        \textbf{Inductor (\si{\micro\henry})} & 3.3 \\ \hline
+        \textbf{Capacitor (\si{\micro\farad})} & 500 \\ \hline
+    \end{tabular}
+\end{table}
+
+On simulation, output voltage reference is arranged to produce 28V output voltage. Input voltage is 16V to see buck boost transition in starting. 
+In the Figure \ref{fig8}, converter is working at single mode configuration which means duty value of buck and boost stages is the same. 
+In the Figure \ref{fig9}, Converter is working at multimode configuration. Both of them, output voltage is very similar and smooth. 
+At multimode, there is transition but it does not affect output voltage as seen in the Figure \ref{fig10}, closely. 
+The waveforms in Figure \ref{fig10} is the almost same with theoretical drawn in the Figure \ref{fig5}.  
+
+\begin{figure}[htbp]
+    \centerline{\includegraphics{fig8.png}}
+    \caption{Output voltage rise at single mode configuration}
+    \label{fig8}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centerline{\includegraphics{fig9.png}}
+    \caption{Output voltage rise at multimode configuration}
+    \label{fig9}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centerline{\includegraphics{fig10.png}}
+    \caption{Transition among regions}
+    \label{fig10}
+\end{figure}
+
+\subsection{Line Regulation}
+Line regulation is an important criteria to evaluate a converter’s performance. 
+Line regulation is the ability of converter to maintain output voltage in spite of the input voltage changing. 
+We can see line regulation performance of the converter in the Figure \ref{fig11} and Figure \ref{fig12} while changing input voltage between 16V to 40V and 40V to 16V. 
+Line regulation is smaller than \%2 of output voltage at two strategies. Transient characteristic is different. Overshoot at multimode is smaller than single mode. 
+\%10 of output voltage is acceptable. In this case, single mode configuration fails.
+
+\begin{figure}[htbp]
+    \centerline{\includegraphics{fig11.png}}
+    \caption{Line regulation at single mode operation}
+    \label{fig11}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centerline{\includegraphics{fig12.png}}
+    \caption{Line regulation at multimode operation}
+    \label{fig12}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centerline{\includegraphics{fig13.png}}
+    \caption{Load regulation at single mode operation}
+    \label{fig13}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centerline{\includegraphics{fig14.png}}
+    \caption{Load regulation at multimode operation}
+    \label{fig14}
+\end{figure}
+
+\subsection{Load Regulation}
+Load regulation is another important criteria to evaluate a converter’s performance. 
+Load regulation is the ability of converter to maintain output voltage in spite of the output load changing. 
+We can see load regulation performance of the converter in the Figure \ref{fig13} and Figure \ref{fig14} while changing load power between 100W to 250W and 250W to 100W. 
+In the Figure \ref{fig13} and Figure \ref{fig14}, we can see load regulation at buck, boost and buck-boost states. Load regulation is smaller than \%2 of output voltage at two strategies. 
+Transient characteristic is different. Overshoot at multimode is smaller than single mode. 
+
+\section*{Conclusion}
+Performance comparison between single-mode and multimode control strategies for the FSBB converter has been done in this work, which has been evaluated based on simulations.
+Both designs have shown good regulatory capability, ensuring that output voltage deviations are within 2\% under different line and load conditions.
+The single-mode control strategy offers simplicity in implementation, since it maintains a unified duty cycle throughout all operating regions.
+However, this advantage comes with the cost of reduced efficiency, mainly because of the continuous operation of all four switches, hence higher switching and conduction losses.
+In contrast, the multimode control strategy dynamically chooses between buck, boost, constant-buck, and constant-boost states based on the input-to-output voltage ratio and subsequently reduces the number of active switches during certain periods.
+This is a selective operation that reduces switching losses and enhances efficiency without sacrificing voltage regulation performance.
+Moreover, the transient response is characterized by lower overshoot and smoother mode transitions under multimode control, hence enhancing stability.
+In general, this comparison shows that, from the perspective of control, both strategies can be applied effectively, but the multimode approach is more suitable in applications for high efficiency and a wide range where power loss and thermal management are critical issues.
+Future work could include hardware implementation and experimental validation to further analyze the real-world efficiency, transient behavior, and control stability over a wide range of operating conditions.
+
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv,references}
+
+\end{document}
