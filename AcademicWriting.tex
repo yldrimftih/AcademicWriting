@@ -43,8 +43,12 @@ Digital Control, Current Mode Control, Four Switch Buck Boost Converter, Power E
 \end{IEEEkeywords}
 
 \section{Introduction}
-Four-Switch Buck-Boost Converter (FSBB) is used widely in power supplies because it can work wide input range and also output voltage can be set to wide range. 
-We can see the FSBB in Figure 1. There are four switches. Two of them are used as buck switches. The others are used as boost switches. Actually, it is the cascaded buck and boost converters. 
+
+The FSBB converter has a wide input voltage range and provides a flexible and regulated output. 
+The four-switch buck-boost topology cascades the buck and boost converters into one stage using four switches. 
+Figure \ref{fig1-four-switch-buck-boost-converter} shows the layout of an FSBB converter. 
+This results in large design flexibility where the output voltage can be set higher or lower than the input. 
+In addition, the FSBB can operate as a bidirectional converter when current-mode control is employed, making it highly suitable for applications such as battery charging and discharging \cite{ref_1, ref_2, ref_3, ref_4}.
 
 \begin{figure}[htbp]
     \centerline{\includegraphics{figures/fig1-four-switch-buck-boost-converter.png}}
@@ -52,17 +56,24 @@ We can see the FSBB in Figure 1. There are four switches. Two of them are used a
     \label{fig1-four-switch-buck-boost-converter}
 \end{figure}
 
-For designer, it provides ease to use since the designer gets rid of the design burden. The output voltage can be adjusted within the specified range. 
-When the current mode control is used to control converter, it can be used as battery charger and discharger \cite{ref_1, ref_2, ref_3, ref_4} because it is also a bidirectional converter.
-There are various advantages to use FSBB. However, there is disadvantages of FSBB. The control of FSBB is complicated since FSBB has two topologies which are buck and boost. 
-That means it has two duty cycles to be controlled. Transitions among the regions are not very smooth. With the proper control strategy, it can meet the standard specifications.
-There are various control methodologies. Two of them are single mode \cite{ref_2} and multimode control \cite{ref_5, ref_6, ref_7, ref_8}. In part 2, the control strategies will be explained.
-We will compare these strategies in part 3 on simulation results. 
+Despite these advantages, the main problem of the FSBB converter is its control complexity. Since the converter integrates two topologies, buck and boost, it needs to manage two different duty cycles. 
+Ensuring smooth transitions between the different operating regions is the major problem. If not designed with a strong control strategy, it will lead to poor performance, which may not meet the required specifications.
+
+This paper explores two active control methodologies that have been developed to handle this complexity: single-mode control \cite{ref_2} and multimode control \cite{ref_5, ref_6, ref_7, ref_8}. 
+Part 2 will outline in detail these control strategies. We shall present a comparison of their performance based on simulation results in Part 3, with a view to assess their performance.
 
 \section{Operation Principle of the FSBB}
 \subsection{Single Mode Control Strategy}
-In single mode strategy, there is one duty cycle value. In Figure \ref{fig2}, we can see the duty cycle of the switches.
-In this mode, four switches are working and efficiency is low since there are always switching losses of four switches.
+The single-mode control strategy keeps the converter running in the buck-boost mode continuously, irrespective of the relation between the input and output voltage. 
+This approach is described by the application of a single duty cycle value to generate the control signals for all four switches.
+
+The control signals are applied complementarily. For instance, the so-called buck switches S1 and S2 and the boost switches S3 and S4 are driven with just this one duty cycle D. 
+As in the switching topology of Figure \ref{fig2}, all four switches are switching and transitioning during any given switching cycle.
+
+The major advantage of this approach is that only one control variable must be computed. However, the big disadvantage is that this approach results in low efficiency. 
+Since all four switches are always on, the converter always suffers from switching losses and conduction losses of all four devices. 
+This is very inefficient since the converter may operate under the condition where only buck operation \( V_{\text{in}} > V_{\text{out}} \) or only boost operation \( V_{\text{in}} < V_{\text{out}} \) is required. 
+For such a case, an ideal controller would use only two switches, but this strategy enforces all four switches to be ON, which results in unnecessary power loss and heat generation.
 
 \begin{figure}[htbp]
     \centerline{\includegraphics{figures/fig2.png}}
@@ -81,7 +92,7 @@ In multimode control, there are four operation states.
 
 \subsubsection{Buck State}
 Buck state happens when the input voltage of converter is greater than the output voltage. In this state, duty of buck switches is controlled. 
-Boost switch on the line(Q4) is always on and the other(Q3) is always off position as seen in Figure \ref{fig3}. 
+Boost switch on the line (Q4) is always on and the other (Q3) is always off position as seen in Figure \ref{fig3}. 
 At buck switches, there are switching loss and conduction loss. 
 At boost switch on the line, there is only conduction loss. Because of that, efficiency is high compare to single mode control.  
 
@@ -226,11 +237,14 @@ Transient characteristic is different. Overshoot at multimode is smaller than si
 Performance comparison between single-mode and multimode control strategies for the FSBB converter has been done in this work, which has been evaluated based on simulations.
 Both designs have shown good regulatory capability, ensuring that output voltage deviations are within 2\% under different line and load conditions.
 The single-mode control strategy offers simplicity in implementation, since it maintains a unified duty cycle throughout all operating regions.
+
 However, this advantage comes with the cost of reduced efficiency, mainly because of the continuous operation of all four switches, hence higher switching and conduction losses.
 In contrast, the multimode control strategy dynamically chooses between buck, boost, constant-buck, and constant-boost states based on the input-to-output voltage ratio and subsequently reduces the number of active switches during certain periods.
 This is a selective operation that reduces switching losses and enhances efficiency without sacrificing voltage regulation performance.
+
 Moreover, the transient response is characterized by lower overshoot and smoother mode transitions under multimode control, hence enhancing stability.
 In general, this comparison shows that, from the perspective of control, both strategies can be applied effectively, but the multimode approach is more suitable in applications for high efficiency and a wide range where power loss and thermal management are critical issues.
+
 Future work could include hardware implementation and experimental validation to further analyze the real-world efficiency, transient behavior, and control stability over a wide range of operating conditions.
 
 \bibliographystyle{IEEEtran}
